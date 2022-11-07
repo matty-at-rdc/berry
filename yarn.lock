@@ -29316,11 +29316,11 @@ pem@dexus/pem:
 
 "typescript@patch:typescript@npm%3A4.9.4#optional!builtin<compat/typescript>":
   version: 4.9.4
-  resolution: "typescript@patch:typescript@npm%3A4.9.4#optional!builtin<compat/typescript>::version=4.9.4&hash=ad5954"
+  resolution: "typescript@patch:typescript@npm%3A4.9.4#optional!builtin<compat/typescript>::version=4.9.4&hash=e3df21"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: e7321aeb1e2c0e3c19599808707208e2b730de8d17a5624f0a7297b9a1ffa39974edd4a819108b3b635bc00171476ddfa339e04d928a03ce8d8c6944cb8ec008
+  checksum: f63a1b1665cdfd24b98926391279d6cb7cac2698cb3a8e5968d10333a8ed54e7bf078eee28e164bdf1c87efe0e25cdcc255ea5778a8504650f2370ef98038398
   languageName: node
   linkType: hard
 
