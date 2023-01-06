@@ -2173,6 +2173,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cspotcode/source-map-support@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@cspotcode/source-map-support@npm:0.8.1"
+  dependencies:
+    "@jridgewell/trace-mapping": "npm:0.3.9"
+  checksum: 4327d8e6e4347897f5baf265c43ff094260a3ad7b53920fa07472aa18699ba7d570e5171082e88d19e4b5cce6f35cc1666b1c8ccb8b74d67e4f482395b8c511d
+  languageName: node
+  linkType: hard
+
 "@docsearch/css@npm:3.2.1":
   version: 3.2.1
   resolution: "@docsearch/css@npm:3.2.1"
@@ -4471,7 +4480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/resolve-uri@npm:3.1.0":
+"@jridgewell/resolve-uri@npm:3.1.0, @jridgewell/resolve-uri@npm:^3.0.3":
   version: 3.1.0
   resolution: "@jridgewell/resolve-uri@npm:3.1.0"
   checksum: 6b641bb7e25bc92a9848898cc91a77a390f393f086297ec2336d911387bdd708919c418e74a22732cfc21d0e7300b94306f437d2e9de5ab58b33ebc6c39d6f9d
@@ -4499,6 +4508,16 @@ __metadata:
   version: 1.4.14
   resolution: "@jridgewell/sourcemap-codec@npm:1.4.14"
   checksum: 2147ea75c966fed8a7d9ed6679b7e8c380fa790a9bea5a64f4ec1c26d24e44b461aa60fc3b228cea03a46708d9d1bcf19508035bf27ad5e8f63d0998ed1d1117
+  languageName: node
+  linkType: hard
+
+"@jridgewell/trace-mapping@npm:0.3.9":
+  version: 0.3.9
+  resolution: "@jridgewell/trace-mapping@npm:0.3.9"
+  dependencies:
+    "@jridgewell/resolve-uri": "npm:^3.0.3"
+    "@jridgewell/sourcemap-codec": "npm:^1.4.10"
+  checksum: 542c5f0f0ae874121e9de649581f9619cc0c65e33292e1285f1233f5ff3e41e6f4f216d69a4c3f800b4d6db208ff6c710307e19e1ff170ed5304807e346e6cf9
   languageName: node
   linkType: hard
 
@@ -6254,15 +6273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/source-map-support@npm:^0":
-  version: 0.5.6
-  resolution: "@types/source-map-support@npm:0.5.6"
-  dependencies:
-    source-map: "npm:^0.6.0"
-  checksum: 72fb43f854f57755318c60ea74e14394676e6644da22b21d28c879010d9a6afe41ab5f69949980f2a866fbf5f2b6e0918f03919950ff091d3720248144e10393
-  languageName: node
-  linkType: hard
-
 "@types/ssri@npm:^6.0.1":
   version: 6.0.1
   resolution: "@types/ssri@npm:6.0.1"
@@ -7373,9 +7383,9 @@ __metadata:
     "@babel/preset-react": "npm:^7.18.6"
     "@babel/preset-typescript": "npm:^7.18.6"
     "@babel/register": "npm:^7.18.9"
+    "@cspotcode/source-map-support": "npm:^0.8.1"
     "@types/jest": "npm:^28.1.6"
     "@types/node": "npm:^18.11.11"
-    "@types/source-map-support": "npm:^0"
     "@yarnpkg/cli": "workspace:^"
     "@yarnpkg/core": "workspace:^"
     "@yarnpkg/eslint-config": "workspace:^"
@@ -7387,7 +7397,6 @@ __metadata:
     eslint: "npm:^8.2.0"
     jest: "npm:^29.2.1"
     pirates: "npm:^4.0.5"
-    source-map-support: "npm:^0.5.21"
     tslib: "npm:^2.4.0"
     typescript: "npm:4.9.4"
   dependenciesMeta:
@@ -27398,16 +27407,6 @@ pem@dexus/pem:
     buffer-from: "npm:^1.0.0"
     source-map: "npm:^0.6.0"
   checksum: 172a8eff7e1d7e58fa922a2de1d4c6d2185ce74851b08bc84a89351ca1dcc8777bd76c481e0a1951e6a0cfd5d9d86acac745ac1508b62dd3078fb873a5826add
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:^0.5.21":
-  version: 0.5.21
-  resolution: "source-map-support@npm:0.5.21"
-  dependencies:
-    buffer-from: "npm:^1.0.0"
-    source-map: "npm:^0.6.0"
-  checksum: ab0f9bfbcfc32018966a7199de5aeafee03a38408852400962d302392aab16d670dc84e6eda937570c5ff09972ae23347804cdffc5fe3c5e382a5b04cee3d580
   languageName: node
   linkType: hard
 

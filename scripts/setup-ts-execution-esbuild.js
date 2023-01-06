@@ -47,14 +47,14 @@ process.once(`exit`, () => {
 
 process.setSourceMapsEnabled
   ? process.setSourceMapsEnabled(true)
-  : require(`source-map-support`).install({
+  : require(`@cspotcode/source-map-support`).install({
     environment: `node`,
     retrieveSourceMap(filename) {
       filename = pnpapi.resolveVirtual(filename) || filename;
 
       const cacheEntry = cache.files.get(filename);
       if (cacheEntry)
-        return {url: undefined, map: cacheEntry.map};
+        return {url: filename, map: cacheEntry.map};
 
       return null;
     },
