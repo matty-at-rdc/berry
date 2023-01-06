@@ -23,31 +23,39 @@ try {
   if (cacheData.version === cache.version) {
     cache.files = cacheData.files;
   }
-} catch { }
+} catch {}
 
 process.once(`exit`, () => {
   if (!cache.isDirty)
     return;
 
   fs.mkdirSync(path.dirname(cachePath), {recursive: true});
-  fs.writeFileSync(cachePath, zlib.gzipSync(v8.serialize({
-    version: cache.version,
-    files: cache.files,
-  }), {level: 1}));
+  fs.writeFileSync(
+    cachePath,
+    zlib.gzipSync(
+      v8.serialize({
+        version: cache.version,
+        files: cache.files,
+      }),
+      {level: 1},
+    ),
+  );
 });
 
-process.setSourceMapsEnabled ? process.setSourceMapsEnabled(true) : require(`source-map-support`).install({
-  environment: `node`,
-  retrieveSourceMap(filename) {
-    filename = pnpapi.resolveVirtual(filename) || filename;
+process.setSourceMapsEnabled
+  ? process.setSourceMapsEnabled(true)
+  : require(`source-map-support`).install({
+    environment: `node`,
+    retrieveSourceMap(filename) {
+      filename = pnpapi.resolveVirtual(filename) || filename;
 
-    const cacheEntry = cache.files.get(filename);
-    if (cacheEntry)
-      return {url: undefined, map: cacheEntry.map};
+      const cacheEntry = cache.files.get(filename);
+      if (cacheEntry)
+        return {url: undefined, map: cacheEntry.map};
 
-    return null;
-  },
-});
+      return null;
+    },
+  });
 
 pirates.addHook(
   (sourceCode, filename) => {
