@@ -1,6 +1,7 @@
 const esbuild = require(`esbuild-wasm`);
 const fs = require(`fs`);
 const v8 = require(`v8`);
+const zlib = require(`zlib`);
 const path = require(`path`);
 const pirates = require(`pirates`);
 
@@ -16,7 +17,7 @@ const cache = {
 
 const cachePath = path.join(__dirname, `../node_modules/.cache/yarn/esbuild-transpile-cache.bin`);
 try {
-  const cacheData = v8.deserialize(fs.readFileSync(cachePath));
+  const cacheData = v8.deserialize(zlib.gunzipSync(fs.readFileSync(cachePath)));
   if (cacheData.version === cache.version) {
     cache.files = cacheData.files;
   }
@@ -27,10 +28,10 @@ process.once(`exit`, () => {
     return;
 
   fs.mkdirSync(path.dirname(cachePath), {recursive: true});
-  fs.writeFileSync(cachePath, v8.serialize({
+  fs.writeFileSync(cachePath, zlib.gzipSync(v8.serialize({
     version: cache.version,
     files: cache.files,
-  }));
+  }), {level: 1}));
 });
 
 pirates.addHook(
