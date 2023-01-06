@@ -6,8 +6,10 @@ const pirates = require(`pirates`);
 
 process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringify(require.resolve(`pnpapi`))}`;
 
+const weeksSinceUNIXEpoch = Math.floor(Date.now() / 604800000);
+
 const cache = {
-  version: `3\0${esbuild.version}`,
+  version: `3\0${esbuild.version}\0${weeksSinceUNIXEpoch}`,
   files: new Map(),
   isDirty: false,
 };
