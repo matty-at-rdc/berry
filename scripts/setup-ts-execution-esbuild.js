@@ -1,13 +1,12 @@
 const esbuild = require(`esbuild-wasm`);
 const fs = require(`fs`);
-const crypto = require(`crypto`);
 const v8 = require(`v8`);
 const path = require(`path`);
 const pirates = require(`pirates`);
 
 process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringify(require.resolve(`pnpapi`))}`;
 
-let cache = {
+const cache = {
   version: `3\0${esbuild.version}`,
   files: new Map(),
   isDirty: false,
@@ -17,8 +16,7 @@ const cachePath = path.join(__dirname, `../node_modules/.cache/yarn/esbuild-tran
 try {
   const cacheData = v8.deserialize(fs.readFileSync(cachePath));
   if (cacheData.version === cache.version) {
-    cache = cacheData;
-    cache.isDirty = false;
+    cache.files = cacheData.files;
   }
 } catch { }
 
@@ -27,23 +25,20 @@ process.once(`exit`, () => {
     return;
 
   fs.mkdirSync(path.dirname(cachePath), {recursive: true});
-  fs.writeFileSync(cachePath, v8.serialize(cache));
-  // TODO: Remove unused entries from the cache
+  fs.writeFileSync(cachePath, v8.serialize({
+    version: cache.version,
+    files: cache.files,
+  }));
 });
 
 pirates.addHook(
-  (code, filename) => {
-    const cachedEntry = cache.files.get(filename);
-    const {mtimeMs} = fs.statSync(filename);
-    if (cachedEntry?.mtimeMs === mtimeMs)
-      return cachedEntry.code;
+  (sourceCode, filename) => {
+    const cacheEntry = cache.files.get(filename);
 
-    const hash = crypto.createHash(`sha1`).update(code).digest(`hex`);
+    if (cacheEntry?.source === sourceCode)
+      return cacheEntry.code;
 
-    if (cachedEntry?.hash === hash)
-      return cachedEntry.code;
-
-    const res = esbuild.transformSync(code, {
+    const res = esbuild.transformSync(sourceCode, {
       target: `node14`,
       loader: path.extname(filename).slice(1),
       sourcefile: filename,
@@ -54,8 +49,7 @@ pirates.addHook(
 
     cache.isDirty = true;
     cache.files.set(filename, {
-      hash,
-      mtimeMs,
+      source: sourceCode,
       code: res.code,
     });
 
