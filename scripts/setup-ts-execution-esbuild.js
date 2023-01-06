@@ -13,7 +13,7 @@ process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringif
 const weeksSinceUNIXEpoch = Math.floor(Date.now() / 604800000);
 
 const cache = {
-  version: `6\0${esbuild.version}\0${weeksSinceUNIXEpoch}`,
+  version: [6, esbuild.version, weeksSinceUNIXEpoch, process.versions.node].join(`\0`),
   files: new Map(),
   isDirty: false,
 };
@@ -61,7 +61,7 @@ pirates.addHook(
       return cacheEntry.code;
 
     const res = esbuild.transformSync(sourceCode, {
-      target: `node14`,
+      target: `node${process.versions.node}`,
       loader: path.extname(filename).slice(1),
       sourcefile: filename,
       sourcemap: `both`,
