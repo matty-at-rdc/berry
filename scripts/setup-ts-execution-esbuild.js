@@ -1,5 +1,4 @@
 const esbuild = require(`esbuild-wasm`);
-const sourceMapSupport = require(`source-map-support`);
 const fs = require(`fs`);
 const v8 = require(`v8`);
 const zlib = require(`zlib`);
@@ -13,7 +12,7 @@ process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringif
 const weeksSinceUNIXEpoch = Math.floor(Date.now() / 604800000);
 
 const cache = {
-  version: [6, esbuild.version, weeksSinceUNIXEpoch, process.versions.node].join(`\0`),
+  version: [6, esbuild.version, weeksSinceUNIXEpoch, process.versions.node, !!process.setSourceMapsEnabled].join(`\0`),
   files: new Map(),
   isDirty: false,
 };
@@ -37,8 +36,7 @@ process.once(`exit`, () => {
   }), {level: 1}));
 });
 
-sourceMapSupport.install({
-  handleUncaughtExceptions: false,
+process.setSourceMapsEnabled ? process.setSourceMapsEnabled(true) : require(`source-map-support`).install({
   environment: `node`,
   retrieveSourceMap(filename) {
     filename = pnpapi.resolveVirtual(filename) || filename;
@@ -64,7 +62,7 @@ pirates.addHook(
       target: `node${process.versions.node}`,
       loader: path.extname(filename).slice(1),
       sourcefile: filename,
-      sourcemap: `both`,
+      sourcemap: process.setSourceMapsEnabled ? `inline` : `both`,
       platform: `node`,
       format: `cjs`,
     });
