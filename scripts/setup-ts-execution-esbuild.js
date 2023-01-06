@@ -4,7 +4,9 @@ const v8 = require(`v8`);
 const zlib = require(`zlib`);
 const path = require(`path`);
 const pirates = require(`pirates`);
+const pnpapi = require(`pnpapi`);
 
+// Needed by the worker spawned by Esbuild
 process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringify(require.resolve(`pnpapi`))}`;
 
 const weeksSinceUNIXEpoch = Math.floor(Date.now() / 604800000);
@@ -36,6 +38,8 @@ process.once(`exit`, () => {
 
 pirates.addHook(
   (sourceCode, filename) => {
+    filename = pnpapi.resolveVirtual(filename) || filename;
+
     const cacheEntry = cache.files.get(filename);
 
     if (cacheEntry?.source === sourceCode)
@@ -59,7 +63,7 @@ pirates.addHook(
     return res.code;
   },
   {
-    extensions: [`.jsx`, `.js`, `.ts`, `.tsx`],
+    extensions: [`.tsx`, `.ts`, `.js`],
     matcher(p) {
       if (p?.endsWith(`.js`)) return /packages(\\|\/)yarnpkg-pnp(\\|\/)sources(\\|\/)node/.test(p);
 
