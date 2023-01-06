@@ -8,7 +8,7 @@ const pirates = require(`pirates`);
 process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringify(require.resolve(`pnpapi`))}`;
 
 let cache = {
-  version: `1\0${esbuild.version}`,
+  version: `3\0${esbuild.version}`,
   files: new Map(),
 };
 
@@ -28,9 +28,14 @@ process.once(`exit`, () => {
 
 pirates.addHook(
   (code, filename) => {
+    const cachedEntry = cache.files.get(filename);
+    const {mtimeMs} = fs.statSync(filename);
+    if (cachedEntry?.mtimeMs === mtimeMs)
+      return cachedEntry.code;
+
+
     const hash = crypto.createHash(`sha1`).update(code).digest(`hex`);
 
-    const cachedEntry = cache.files.get(filename);
     if (cachedEntry?.hash === hash)
       return cachedEntry.code;
 
@@ -45,6 +50,7 @@ pirates.addHook(
 
     cache.files.set(filename, {
       hash,
+      mtimeMs,
       code: res.code,
     });
 
