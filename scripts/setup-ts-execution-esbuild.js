@@ -1,5 +1,6 @@
 const esbuild = require(`esbuild-wasm`);
 const fs = require(`fs`);
+const crypto = require(`crypto`);
 const v8 = require(`v8`);
 const zlib = require(`zlib`);
 const path = require(`path`);
@@ -30,8 +31,9 @@ process.once(`exit`, () => {
     return;
 
   fs.mkdirSync(path.dirname(cachePath), {recursive: true});
+  const tmpPath = cachePath + crypto.randomBytes(8).toString(`hex`);
   fs.writeFileSync(
-    cachePath,
+    tmpPath,
     zlib.gzipSync(
       v8.serialize({
         version: cache.version,
@@ -40,6 +42,7 @@ process.once(`exit`, () => {
       {level: 1},
     ),
   );
+  fs.renameSync(tmpPath, cachePath);
 });
 
 process.setSourceMapsEnabled
