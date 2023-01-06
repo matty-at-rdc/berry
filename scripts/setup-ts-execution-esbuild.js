@@ -10,6 +10,7 @@ process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringif
 let cache = {
   version: `3\0${esbuild.version}`,
   files: new Map(),
+  isDirty: false,
 };
 
 const cachePath = path.join(__dirname, `../node_modules/.cache/yarn/esbuild-transpile-cache.bin`);
@@ -17,10 +18,14 @@ try {
   const cacheData = v8.deserialize(fs.readFileSync(cachePath));
   if (cacheData.version === cache.version) {
     cache = cacheData;
+    cache.isDirty = false;
   }
 } catch { }
 
 process.once(`exit`, () => {
+  if (!cache.isDirty)
+    return;
+
   fs.mkdirSync(path.dirname(cachePath), {recursive: true});
   fs.writeFileSync(cachePath, v8.serialize(cache));
   // TODO: Remove unused entries from the cache
@@ -32,7 +37,6 @@ pirates.addHook(
     const {mtimeMs} = fs.statSync(filename);
     if (cachedEntry?.mtimeMs === mtimeMs)
       return cachedEntry.code;
-
 
     const hash = crypto.createHash(`sha1`).update(code).digest(`hex`);
 
@@ -48,6 +52,7 @@ pirates.addHook(
       format: `cjs`,
     });
 
+    cache.isDirty = true;
     cache.files.set(filename, {
       hash,
       mtimeMs,
