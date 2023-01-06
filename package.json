@@ -15,6 +15,7 @@
     "@babel/register": "^7.18.9",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.11.11",
+    "@types/source-map-support": "^0",
     "@yarnpkg/cli": "workspace:^",
     "@yarnpkg/core": "workspace:^",
     "@yarnpkg/eslint-config": "workspace:^",
@@ -95,6 +96,7 @@
   },
   "dependencies": {
     "esbuild-wasm": "^0.16.14",
-    "pirates": "^4.0.5"
+    "pirates": "^4.0.5",
+    "source-map-support": "^0.5.21"
   }
 }

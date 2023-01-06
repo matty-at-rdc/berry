@@ -1,4 +1,5 @@
 const esbuild = require(`esbuild-wasm`);
+const sourceMapSupport = require(`source-map-support`);
 const fs = require(`fs`);
 const v8 = require(`v8`);
 const zlib = require(`zlib`);
@@ -12,7 +13,7 @@ process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringif
 const weeksSinceUNIXEpoch = Math.floor(Date.now() / 604800000);
 
 const cache = {
-  version: `3\0${esbuild.version}\0${weeksSinceUNIXEpoch}`,
+  version: `6\0${esbuild.version}\0${weeksSinceUNIXEpoch}`,
   files: new Map(),
   isDirty: false,
 };
@@ -36,6 +37,20 @@ process.once(`exit`, () => {
   }), {level: 1}));
 });
 
+sourceMapSupport.install({
+  handleUncaughtExceptions: false,
+  environment: `node`,
+  retrieveSourceMap(filename) {
+    filename = pnpapi.resolveVirtual(filename) || filename;
+
+    const cacheEntry = cache.files.get(filename);
+    if (cacheEntry)
+      return {url: undefined, map: cacheEntry.map};
+
+    return null;
+  },
+});
+
 pirates.addHook(
   (sourceCode, filename) => {
     filename = pnpapi.resolveVirtual(filename) || filename;
@@ -49,7 +64,7 @@ pirates.addHook(
       target: `node14`,
       loader: path.extname(filename).slice(1),
       sourcefile: filename,
-      sourcemap: `inline`,
+      sourcemap: `both`,
       platform: `node`,
       format: `cjs`,
     });
@@ -58,6 +73,7 @@ pirates.addHook(
     cache.files.set(filename, {
       source: sourceCode,
       code: res.code,
+      map: res.map,
     });
 
     return res.code;
