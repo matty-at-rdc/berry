@@ -5,10 +5,12 @@ const v8 = require(`v8`);
 const zlib = require(`zlib`);
 const path = require(`path`);
 const pirates = require(`pirates`);
-const pnpapi = require(`pnpapi`);
 
 // Needed by the worker spawned by Esbuild
-process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringify(require.resolve(`pnpapi`))}`;
+if (process.versions.pnp)
+  process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ``} -r ${JSON.stringify(require.resolve(`pnpapi`))}`;
+
+const resolveVirtual = process.versions.pnp ? require(`pnpapi`).resolveVirtual : undefined;
 
 const weeksSinceUNIXEpoch = Math.floor(Date.now() / 604800000);
 
@@ -50,7 +52,7 @@ process.setSourceMapsEnabled
   : require(`@cspotcode/source-map-support`).install({
     environment: `node`,
     retrieveSourceMap(filename) {
-      filename = pnpapi.resolveVirtual(filename) || filename;
+      filename = resolveVirtual?.(filename) || filename;
 
       const cacheEntry = cache.files.get(filename);
       if (cacheEntry)
@@ -62,7 +64,7 @@ process.setSourceMapsEnabled
 
 pirates.addHook(
   (sourceCode, filename) => {
-    filename = pnpapi.resolveVirtual(filename) || filename;
+    filename = resolveVirtual?.(filename) || filename;
 
     const cacheEntry = cache.files.get(filename);
 
