@@ -1,22 +1,22 @@
 hyperfine -w 1 \
   -n esbuild-cache \
   --prepare "" \
-  "YARN_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
+  "YARNPKG_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
   -n esbuild-no-cache \
   --prepare "rm -r ./node_modules/.cache/yarn" \
-  "YARN_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
+  "YARNPKG_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
   -n esbuild-partial-cache \
   --prepare "echo '//' | tee -a packages/yarnpkg-core/sources/*.ts" \
-  "YARN_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
+  "YARNPKG_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
   -n babel-cache \
   --prepare "" \
-  "YARN_TRANSPILER=babel node ./scripts/run-yarn.js --version" \
+  "YARNPKG_TRANSPILER=babel node ./scripts/run-yarn.js --version" \
   -n babel-no-cache \
   --prepare "rm -r /tmp/babel" \
-  "YARN_TRANSPILER=babel node ./scripts/run-yarn.js --version" \
+  "YARNPKG_TRANSPILER=babel node ./scripts/run-yarn.js --version" \
   -n babel-partial-cache \
   --prepare "echo '//' | tee -a packages/yarnpkg-core/sources/*.ts" \
-  "YARN_TRANSPILER=babel node ./scripts/run-yarn.js --version"
+  "YARNPKG_TRANSPILER=babel node ./scripts/run-yarn.js --version"
 
 # Benchmark 1: esbuild-cache
 #   Time (mean ± σ):      1.176 s ±  0.026 s    [User: 1.330 s, System: 0.084 s]

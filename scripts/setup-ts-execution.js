@@ -1,4 +1,4 @@
-switch (process.env.YARN_TRANSPILER) {
+switch (process.env.YARNPKG_TRANSPILER) {
   case `esbuild`:
     require(`./setup-ts-execution-esbuild.js`);
     break;
