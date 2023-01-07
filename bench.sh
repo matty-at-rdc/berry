@@ -6,7 +6,7 @@ hyperfine -w 1 \
   --prepare "rm -r ./node_modules/.cache/yarn" \
   "YARN_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
   -n esbuild-partial-cache \
-  --prepare "echo '//' >> packages/yarnpkg-cli/sources/cli.ts" \
+  --prepare "echo '//' | tee -a packages/yarnpkg-core/sources/*.ts" \
   "YARN_TRANSPILER=esbuild node ./scripts/run-yarn.js --version" \
   -n babel-cache \
   --prepare "" \
@@ -15,37 +15,37 @@ hyperfine -w 1 \
   --prepare "rm -r /tmp/babel" \
   "YARN_TRANSPILER=babel node ./scripts/run-yarn.js --version" \
   -n babel-partial-cache \
-  --prepare "echo '//' >> packages/yarnpkg-cli/sources/cli.ts" \
+  --prepare "echo '//' | tee -a packages/yarnpkg-core/sources/*.ts" \
   "YARN_TRANSPILER=babel node ./scripts/run-yarn.js --version"
 
 # Benchmark 1: esbuild-cache
-#   Time (mean ± σ):      1.147 s ±  0.017 s    [User: 1.295 s, System: 0.089 s]
-#   Range (min … max):    1.114 s …  1.174 s    10 runs
+#   Time (mean ± σ):      1.176 s ±  0.026 s    [User: 1.330 s, System: 0.084 s]
+#   Range (min … max):    1.142 s …  1.221 s    10 runs
 
 # Benchmark 2: esbuild-no-cache
-#   Time (mean ± σ):      3.115 s ±  0.030 s    [User: 1.657 s, System: 0.157 s]
-#   Range (min … max):    3.073 s …  3.166 s    10 runs
+#   Time (mean ± σ):      3.161 s ±  0.054 s    [User: 1.687 s, System: 0.145 s]
+#   Range (min … max):    3.104 s …  3.270 s    10 runs
 
 # Benchmark 3: esbuild-partial-cache
-#   Time (mean ± σ):      1.598 s ±  0.024 s    [User: 1.538 s, System: 0.117 s]
-#   Range (min … max):    1.566 s …  1.645 s    10 runs
+#   Time (mean ± σ):      2.047 s ±  0.023 s    [User: 1.581 s, System: 0.124 s]
+#   Range (min … max):    2.006 s …  2.086 s    10 runs
 
 # Benchmark 4: babel-cache
-#   Time (mean ± σ):      1.891 s ±  0.034 s    [User: 2.385 s, System: 0.149 s]
-#   Range (min … max):    1.842 s …  1.955 s    10 runs
+#   Time (mean ± σ):      1.916 s ±  0.044 s    [User: 2.410 s, System: 0.154 s]
+#   Range (min … max):    1.852 s …  1.986 s    10 runs
 
 # Benchmark 5: babel-no-cache
-#   Time (mean ± σ):      7.251 s ±  0.197 s    [User: 11.019 s, System: 0.424 s]
-#   Range (min … max):    7.043 s …  7.593 s    10 runs
+#   Time (mean ± σ):      7.089 s ±  0.098 s    [User: 10.853 s, System: 0.373 s]
+#   Range (min … max):    6.997 s …  7.297 s    10 runs
 
 # Benchmark 6: babel-partial-cache
-#   Time (mean ± σ):      1.843 s ±  0.037 s    [User: 2.293 s, System: 0.159 s]
-#   Range (min … max):    1.789 s …  1.887 s    10 runs
+#   Time (mean ± σ):      2.910 s ±  0.038 s    [User: 4.215 s, System: 0.214 s]
+#   Range (min … max):    2.847 s …  2.996 s    10 runs
 
 # Summary
 #   'esbuild-cache' ran
-#     1.39 ± 0.03 times faster than 'esbuild-partial-cache'
-#     1.61 ± 0.04 times faster than 'babel-partial-cache'
-#     1.65 ± 0.04 times faster than 'babel-cache'
-#     2.72 ± 0.05 times faster than 'esbuild-no-cache'
-#     6.32 ± 0.19 times faster than 'babel-no-cache'
+#     1.63 ± 0.05 times faster than 'babel-cache'
+#     1.74 ± 0.04 times faster than 'esbuild-partial-cache'
+#     2.47 ± 0.06 times faster than 'babel-partial-cache'
+#     2.69 ± 0.07 times faster than 'esbuild-no-cache'
+#     6.03 ± 0.16 times faster than 'babel-no-cache'
