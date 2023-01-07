@@ -26,11 +26,12 @@ try {
   if (cacheData.version === cache.version) {
     cache.files = cacheData.files;
   }
-} catch {}
+} catch { }
 
-process.once(`exit`, () => {
+function persistCache() {
   if (!cache.isDirty)
     return;
+  cache.isDirty = false;
 
   fs.mkdirSync(path.dirname(cachePath), {recursive: true});
   const tmpPath = cachePath + crypto.randomBytes(8).toString(`hex`);
@@ -45,7 +46,10 @@ process.once(`exit`, () => {
     ),
   );
   fs.renameSync(tmpPath, cachePath);
-});
+}
+
+process.once(`exit`, persistCache);
+process.nextTick(persistCache);
 
 process.setSourceMapsEnabled
   ? process.setSourceMapsEnabled(true)
